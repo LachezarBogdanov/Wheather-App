@@ -1,12 +1,27 @@
+import { useRef, useState } from 'react';
 import styles from './Wheather.module.css'
+import { wheatherService } from '../../services/WheatherService';
 
 export default function Wheather() {
+    const inputRef = useRef();
+    const [wheatherData, setWheatherData] = useState({});
+
+    const handleSearch = async () => {
+        const cityName = inputRef.current.value;
+
+        const result = await wheatherService.getInfo(cityName);
+
+        console.log(result);
+        
+        
+    }
+  
     return (
         <>
             <div className={styles['wheather']}>
                 <div className={styles['search-bar']}>
-                    <input type="text" placeholder='Search'/>
-                    <img src="/Search-icon.png" alt=""  className={styles['search-icon']}/>
+                    <input type="text" placeholder='Search' ref={inputRef}/>
+                    <img src="/Search-icon.png" alt=""  className={styles['search-icon']} onClick={handleSearch}/>
                 </div>
                 <img src="/clear.png" alt="something" className={styles['weather-icon']} />
                 <p className={styles['temperature']}>16°c</p>
