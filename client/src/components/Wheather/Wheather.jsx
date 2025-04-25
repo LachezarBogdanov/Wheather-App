@@ -9,10 +9,26 @@ export default function Wheather() {
     const handleSearch = async () => {
         const cityName = inputRef.current.value;
 
-        const result = await wheatherService.getInfo(cityName);
+        if(!cityName) {
+            alert('Please enter city name!')
+        }
 
-        console.log(result);
+        const result = await wheatherService.getInfo(cityName);
         
+        const iconId = result.weather[0].icon;
+        const icon = `https://openweathermap.org/img/wn/${iconId}@2x.png`;
+        
+        setWheatherData({
+            temperature: Math.floor(result.main.temp),
+            cityName: cityName,
+            humidity: result.main.humidity,
+            windSpeed: result.wind.speed,
+            icon,
+            weatherType: result.weather[0].main,
+            feelsLike: Math.floor(result.main.feels_like),
+        });
+
+        inputRef.current.value = '';
         
     }
   
@@ -23,21 +39,25 @@ export default function Wheather() {
                     <input type="text" placeholder='Search' ref={inputRef}/>
                     <img src="/Search-icon.png" alt=""  className={styles['search-icon']} onClick={handleSearch}/>
                 </div>
-                <img src="/clear.png" alt="something" className={styles['weather-icon']} />
-                <p className={styles['temperature']}>16°c</p>
-                <p className={styles['location']}>London</p>
+                <img src={wheatherData.icon || '/clear.png'} className={styles['weather-icon']} />
+                    <div className={styles['other']}>
+                        <p className={styles['weatherType']}>Weather {wheatherData.weatherType || 'clear'}</p>
+                        <p className={styles['feelsLike']}>Feels like {wheatherData.feelsLike || 0} °C</p>
+                    </div>
+                <p className={styles['temperature']}>{wheatherData.temperature || 0}°C</p>
+                <p className={styles['location']}>{wheatherData.cityName || 'No city founded'}</p>
                 <div className={styles['wheather-data']}>
                     <div className={styles['col']}>
                         <img src="/humidity.png" alt="" className={styles['col-png']} />
                         <div>
-                            <p>91 %</p>
+                            <p>{wheatherData.humidity || 0} %</p>
                             <span>Humidity</span>
                         </div>
                     </div>
                     <div className={styles['col']}>
                         <img src="/wind.png" alt="" className={styles['col-png']} />
                         <div>
-                            <p>3.6 Km/h</p>
+                            <p>{wheatherData.windSpeed || 0} Km/h</p>
                             <span>Wind Speed</span>
                         </div>
                     </div>
