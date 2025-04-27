@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import styles from './Wheather.module.css'
 import { wheatherService } from '../../services/WheatherService';
+import { toast } from 'react-toastify';
 
 export default function Wheather() {
     const inputRef = useRef();
@@ -10,7 +11,8 @@ export default function Wheather() {
         const cityName = inputRef.current.value;
 
         if(!cityName) {
-            alert('Please enter city name!')
+            toast.error('Please enter city name!');
+            return;
         }
 
         const result = await wheatherService.getInfo(cityName);
